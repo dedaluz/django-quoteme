@@ -1,6 +1,5 @@
 from django.views.generic.list_detail import object_list, object_detail
 from quoteme.models import Quote, Testimonial
-from tagging.models import Tag, TaggedItem
 from django.shortcuts import get_object_or_404
 
 def quote_list(request, paginate_by=20,
@@ -46,8 +45,7 @@ def quote_tag_list(request, paginate_by=20,
                tag=None, **kwargs):
     """List view for quotes by tag."""
 
-    tag = get_object_or_404(Tag, name__iexact=tag)
-    quotes = TaggedItem.objects.get_by_model(Quote, tag).filter(status=2)
+    quotes = Quote.objects.filter(tags__name__in=tag).filter(status=2)
 
     extra = {'type': 'quote', 'tag': tag, }
     if extra_context:

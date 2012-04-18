@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from quoteme.managers import PublicManager
-from tagging.fields import TagField
+from taggit_autosuggest.managers import TaggableManager
+from sorl.thumbnail import ImageField
 
 
 class QuoteBase(models.Model):
@@ -16,7 +17,8 @@ class QuoteBase(models.Model):
     author = models.CharField(_('author'), blank=False, null=False,
                               max_length=255,
                               help_text=_("The author of the quote."))
-    url_source = models.URLField(_('url source'), verify_exists=False,
+    image  = ImageField(_('picture'), upload_to='quote_authors', blank=True)
+    url_source = models.URLField(_('url source'),
                                  blank=True, null=True)
 
     objects = PublicManager()
@@ -34,7 +36,7 @@ class Quote(QuoteBase):
     slug = models.SlugField(_('slug'), max_length=255, unique=True)
     circa = models.CharField(_('circa'), blank=True, null=True, max_length=100,
                              help_text="When was the quote created?")
-    tags = TagField()
+    tags = TaggableManager()
 
     class Meta:
         verbose_name = _('quote')
