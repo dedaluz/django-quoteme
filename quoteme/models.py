@@ -4,6 +4,8 @@ from quoteme.managers import PublicManager
 from taggit_autosuggest.managers import TaggableManager
 from sorl.thumbnail import ImageField
 
+from basic.people.models import Person
+
 
 class QuoteBase(models.Model):
     STATUS_CHOICES = (
@@ -14,13 +16,9 @@ class QuoteBase(models.Model):
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES,
                                  default=2)
     quote = models.TextField(_('quote'))
-    author = models.CharField(_('author'), blank=False, null=False,
-                              max_length=255,
-                              help_text=_("The author of the quote."))
-    image  = ImageField(_('picture'), upload_to='quote_authors', blank=True)
-    url_source = models.URLField(_('url source'),
-                                 blank=True, null=True)
-
+    author = models.ForeignKey(Person)
+    author = models.CharField(_('author'), help_text=_("The author of the quote."))
+    url_source = models.URLField(_('url source'), blank=True, null=True)
     objects = PublicManager()
 
     class Meta:
